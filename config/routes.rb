@@ -5,7 +5,8 @@ Rails.application.routes.draw do
       resources :users do
         resources :microposts
          member do
-           get :following, :followers
+           post 'follow'
+           delete 'unfollow'
          end
       end
     end

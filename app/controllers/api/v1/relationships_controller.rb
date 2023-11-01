@@ -1,6 +1,6 @@
 class Api::V1::RelationshipsController < ApplicationController
    include JwtAuth
-   before_action ->(request) { authenticate_request(request) }, only: [:create, :update, :destroy]
+    before_action ->(request) { authenticate_request(request) }, only: [:create, :destroy]
   
 
 def create
@@ -14,9 +14,8 @@ def create
     return
   end
   
-  token = encode(user_id) # Use the correct user_id here
-  
-  user = User.find_by(id: user_id, followed_id: params[:followed_id])
+  user = User.find( user_id,  params[:relationship][:followed_id])
+  token = encode(user_id) 
   
   if user.nil?
     render json: { status: 404, error: "User not found" }
