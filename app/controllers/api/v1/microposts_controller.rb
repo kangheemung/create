@@ -102,7 +102,7 @@ class Api::V1::MicropostsController < ApplicationController
           p"====================="
           p params
           p"====================="
-          micropost=Micropost.find_by(id:params[:id])
+          micropost=Micropost.find_by(id: params[:id])
           micropost.destroy
           render json: { message: 'post deleted successfully' }
       end
@@ -110,6 +110,6 @@ class Api::V1::MicropostsController < ApplicationController
     private
   
     def microposts_params
-      params.require(:micropost).permit(:title, :body, :user_id)
+      params.require(:micropost).permit(:title, :body, :user_id,:relationship, :follower_id, :followed_id)
     end
 end

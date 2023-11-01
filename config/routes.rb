@@ -4,6 +4,9 @@ Rails.application.routes.draw do
       post 'auth' => 'auth#create'
       resources :users do
         resources :microposts
+         member do
+           get :following, :followers
+         end
       end
     end
   end
