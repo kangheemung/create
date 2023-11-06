@@ -26,7 +26,7 @@ gem 'activerecord-import'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 gem "jwt"
-gem 'dotenv'
+gem 'dotenv-rails'
 gem 'kaminari'#ページ数限定して表示するゲム
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'

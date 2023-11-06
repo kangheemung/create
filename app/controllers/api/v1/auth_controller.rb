@@ -1,6 +1,6 @@
 class Api::V1::AuthController < ApplicationController
-     skip_before_action :verify_authenticity_token
-  include JwtAuth
+  skip_before_action :jwt_auth, only: [:create] 
+
   def create
     user = User.find_by(email: params[:email])
 

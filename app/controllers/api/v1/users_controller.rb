@@ -1,6 +1,6 @@
 class Api::V1::UsersController < ApplicationController
       include JwtAuth
-      before_action :jwt_auth, except: [:create,:show,:update]
+      skip_before_action :jwt_auth, only: [:create]
 
     def create
         user=User.new(user_params)
@@ -46,19 +46,47 @@ class Api::V1::UsersController < ApplicationController
     end
       
     def follow
-      @user = User.find(params[:id])
-      if current_user.following.include?(@user)
+     p "============= check request header ========="
+     p request.headers['Authorization'] 
+     p"=============================="
+       # jwt_authを呼び出して認証する
+    jwt_auth
+    if @current_user.nil?
+    render json: { status: 401, error: "Unauthorized" }
+      return
+    end
+    token = encode(@current_user.id) # 正しいuser_idを使用する
+    user = User.find_by(id: params[:id])
+    if user.nil?
+      render json: { status: 404, error: "User not found" }
+      return
+    end
+      if @current_user.following.include?(user)
         render json: { status: 400, error: "User is already being followed" }
       else
-        current_user.following << @user
+         @current_user.following << user
         render json: { status: 200, message: "Successfully followed user" }
       end
     end
 
     def unfollow
-      @user = User.find(params[:id])
-      if current_user.following.include?(@user)
-        current_user.following.delete(@user)
+      p "============= check request header ========="
+      p request.headers['Authorization'] 
+      p"=============================="
+       # jwt_authを呼び出して認証する
+     jwt_auth
+    if @current_user.nil?
+    render json: { status: 401, error: "Unauthorized" }
+      return
+    end
+      token = encode(@current_user.id) # 正しいuser_idを使用する
+      user = User.find_by(id: params[:id])
+    if user.nil?
+      render json: { status: 404, error: "User not found" }
+      return
+    end
+      if @current_user.following.include?(user)
+        @current_user.following.delete(user)
         render json: { status: 200, message: "Successfully unfollowed user" }
       else
         render json: { status: 400, error: "User is not being followed" }
@@ -69,9 +97,5 @@ class Api::V1::UsersController < ApplicationController
      def user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation)
      end
-     def current_user
- 　　　　 user_id = decode(params[:token])  # Replace `decode` with the appropriate method for decoding the token
- 　　　　 User.find(user_id)
-　　 end
     
 end

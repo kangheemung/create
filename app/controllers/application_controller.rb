@@ -1,3 +1,4 @@
-class ApplicationController < ActionController::Base
-      protect_from_forgery
+class ApplicationController < ActionController::API
+     include JwtAuth
+     before_action :jwt_auth
 end
